@@ -148,8 +148,7 @@
                         // If the value is the country name, set it as the text content of the cell
                         cell.textContent = value[1];
                       } else if (value !== "" && Array.isArray(value)) {
-                        // If the value is an array with non-empty elements, join them with 
-                        < br > tags
+                        // If the value is an array with non-empty elements, join them with < br > tags
                         value = value.filter(element => element !== ""); // Remove empty elements
                         if (value.length > 0) {
                           value = value.join(" < br > ");
