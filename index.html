@@ -123,7 +123,7 @@
       </div>
       <script>
         var table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
-        fetch('https://raw.githubusercontent.com/yebekhe/SSTPCollector/main/json/configs.json').then(response => response.json()).then(data => {
+        fetch('json/configs.json').then(response => response.json()).then(data => {
               data.forEach(item => {
                   delete item[5]; // Remove item at key 5
                   delete item[8]; // Remove item at key 8
