@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SSTP Collector</title>
+    <style>
+      body {
+        background-color: #f1f1f1;
+        color: #333;
+        font-family: Arial, sans-serif;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      table {
+        border-collapse: collapse;
+        margin: 20px auto;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+        transform: translateZ(0);
+        /* Enable 3D effect */
+        background-color: #fff;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+
+      th {
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
+
+      tr:nth-child(odd) {
+        background-color: #f3f3f3;
+      }
+
+      tr:hover {
+        background-color: #e8e8e8;
+      }
+
+      .toolbar {
+        background-color: #333;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 40px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .toolbar a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0 10px;
+      }
+
+      .toolbar img {
+        height: 50px;
+        margin-right: 20px;
+      }
+
+      .footbar {
+        display: flex;
+        justify-content: center;
+        background-color: var(--primary-color);
+        padding: 8px;
+        box-shadow: var(--box-shadow);
+        background-color: #333;
+        height: 30px;
+      }
+
+      .footbar a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <a href="https://twitter.com/yebekhe" target="_blank">Twitter</a>
+      <h1 style="text-align: center; color: #fff;">SSTP Collector</h1>
+      <a href="https://github.com/yebekhe" target="_blank">GitHub</a>
+    </div>
+    <br>
+    <br>
+    <table id="myTable">
+      <thead>
+        <tr>
+          <th>Country <br>(Physical location) </th>
+          <th>DDNS hostname <br>IP Address <br>(ISP hostname) </th>
+          <th>VPN sessions <br>Uptime <br>Cumulative users </th>
+          <th>Line quality <br>Throughput and Ping <br>Cumulative transfers <br>Logging policy </th>
+          <th>SSL-VPN <br>Windows <br>(comfortable) </th>
+          <th>MS-SSTP <br>Windows Vista, <br>7, 8, RT <br>No client required </th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="footbar">
+      <div>
+        <a href="https://twitter.com/yebekhe">YeBeKhe © 2023</a>
+      </div>
+      <script>
+        var table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+        fetch('https://raw.githubusercontent.com/yebekhe/SSTPCollector/main/json/configs.json').then(response => response.json()).then(data => {
+              data.forEach(item => {
+                  delete item[5]; // Remove item at key 5
+                  delete item[8]; // Remove item at key 8
+                  // Unset the SSL-VPN item in the fifth column
+                  if (item[4][0] === 'SSL-VPN') {
+                    item[4].shift();
+                  }
+                  // Unset the MS-SSTP item in the Seven column
+                  if (item[7][0] === 'MS-SSTP') {
+                    item[7].shift();
+                  }
+                  // Remove the entire sixth column
+                  item.splice(6, 1);
+                  // Replace relative image paths with absolute URLs
+                  if (item[0][0].startsWith('../images/flags/')) {
+                    item[0][0] = 'https://www.vpngate.net/' + item[0][0].slice(3);
+                  }
+                  var row = document.createElement("tr");
+                  item.forEach((value, index) => {
+                      var cell = document.createElement("td");
+                      if (index === 0 && value[0] !== "") {
+                        // If the value is the flag image, create an 
+                        < img > element with the URL as the src attribute
+                        var img = document.createElement("img");
+                        img.src = value[0];
+                        img.alt = value[1];
+                        img.title = value[1];
+                        cell.appendChild(img);
+                      } else if (value !== "" && Array.isArray(value)) {
+                        // If the value is an array with non-empty elements, join them with 
+                        < br > tags
+                        value = value.filter(element => element !== ""); // Remove empty elements
+                        if (value.length > 0) {
+                          value = value.join(" < br > ");
+                          }
+                          else {
+                            value = "";
+                          }
+                          cell.innerHTML = value;
+                        } else {
+                          cell.textContent = value;
+                        }
+                        row.appendChild(cell);
+                      }); table.appendChild(row);
+                  });
+              }).catch(error => console.error(error));
+      </script>
+  </body>
+</html>
